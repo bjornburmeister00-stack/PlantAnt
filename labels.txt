@@ -1,0 +1,12 @@
+0 Rotbuche
+1 Stieleiche
+2 Traubeneiche
+3 Birke (Betula pendula)
+4 Gemeine Kiefer (Pinus sylvestris)
+5 Gemeine Fichte (Picea abies)
+6 Gänseblümchen
+7 Sonnenblume
+8 Lavendel
+9 Glockenblume
+10 Vergissmeinnicht
+11 Rittersporn
