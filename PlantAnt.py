@@ -28,20 +28,20 @@ st.markdown("""
 st.title("🌳 Pflanzen-Detektor – Bäume & Blumen 🌸")
 st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 
-# ====================== PFLANZEN-DATEN (nur Wiki-Links) ======================
+# ====================== WIKI-LINKS ======================
 PLANT_DATA = {
-    "Birke": {"wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"},
-    "Gemeine Fichte": {"wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
-    "Gemeine Kiefer": {"wiki": "https://de.wikipedia.org/wiki/Waldkiefer"},
-    "Rotbuche": {"wiki": "https://de.wikipedia.org/wiki/Rotbuche"},
-    "Stieleiche": {"wiki": "https://de.wikipedia.org/wiki/Stieleiche"},
-    "Traubeneiche": {"wiki": "https://de.wikipedia.org/wiki/Traubeneiche"},
-    "Gänseblümchen": {"wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"},
-    "Glockenblume": {"wiki": "https://de.wikipedia.org/wiki/Glockenblumen"},
-    "Lavendel": {"wiki": "https://de.wikipedia.org/wiki/Lavendel"},
-    "Rittersporn": {"wiki": "https://de.wikipedia.org/wiki/Rittersporn"},
-    "Sonnenblume": {"wiki": "https://de.wikipedia.org/wiki/Sonnenblume"},
-    "Vergissmeinnicht": {"wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"}
+    "Birke": "https://de.wikipedia.org/wiki/Hänge-Birke",
+    "Gemeine Fichte": "https://de.wikipedia.org/wiki/Gemeine_Fichte",
+    "Gemeine Kiefer": "https://de.wikipedia.org/wiki/Waldkiefer",
+    "Rotbuche": "https://de.wikipedia.org/wiki/Rotbuche",
+    "Stieleiche": "https://de.wikipedia.org/wiki/Stieleiche",
+    "Traubeneiche": "https://de.wikipedia.org/wiki/Traubeneiche",
+    "Gänseblümchen": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen",
+    "Glockenblume": "https://de.wikipedia.org/wiki/Glockenblumen",
+    "Lavendel": "https://de.wikipedia.org/wiki/Lavendel",
+    "Rittersporn": "https://de.wikipedia.org/wiki/Rittersporn",
+    "Sonnenblume": "https://de.wikipedia.org/wiki/Sonnenblume",
+    "Vergissmeinnicht": "https://de.wikipedia.org/wiki/Vergissmeinnicht"
 }
 
 # ====================== MODELL LADEN ======================
@@ -88,30 +88,24 @@ with tab1:
         prediction = model.predict(img_array, verbose=False)
         class_idx = np.argmax(prediction[0])
         confidence = float(prediction[0][class_idx] * 100)
-        
-        # Zahl entfernen
-        raw_label = labels[class_idx]
-        predicted_label = raw_label.split('. ', 1)[-1]
 
-        # Ergebnis mit direktem Wikipedia-Link
-        if predicted_label in PLANT_DATA:
-            wiki_link = PLANT_DATA[predicted_label]["wiki"]
-            st.markdown(f"""
-            <div class="result-box">
-                <h3>Erkannt: <strong>{predicted_label}</strong> 
-                <a href="{wiki_link}" target="_blank" style="color: #90EE90; margin-left: 15px;">
-                [Wikipedia]
-                </a></h3>
-                <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div class="result-box">
-                <h3>Erkannt: <strong>{predicted_label}</strong></h3>
-                <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # === ZAHL SAUBER ENTFERNEN ===
+        raw_label = labels[class_idx].strip()
+        # Entfernt alles vor dem ersten Leerzeichen (z.B. "8 Lavendel" → "Lavendel")
+        predicted_label = raw_label.split(' ', 1)[-1]
+
+        # Ergebnis-Box mit Wiki-Link direkt daneben
+        wiki_url = PLANT_DATA.get(predicted_label, "#")
+        
+        st.markdown(f"""
+        <div class="result-box">
+            <h3>Erkannt: <strong>{predicted_label}</strong> 
+            <a href="{wiki_url}" target="_blank" style="color: #90EE90; font-size: 1.1em; margin-left: 20px;">
+            [Wikipedia ansehen]
+            </a></h3>
+            <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 with tab2:
     st.subheader("Meine 12 trainierten Arten")
