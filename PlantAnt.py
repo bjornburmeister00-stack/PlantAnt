@@ -3,16 +3,32 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 
-# ====================== DESIGN ======================
-st.set_page_config(page_title="Pflanzen-Detektor", page_icon="🌳", layout="wide")
+# ====================== STREAMLIT CONFIG & DESIGN ======================
+st.set_page_config(
+    page_title="Pflanzen-Detektor",
+    page_icon="🌳",
+    layout="wide"
+)
 
 st.markdown("""
 <style>
     .main {background-color: #f0f8f0;}
-    h1 {color: #228B22; text-align: center;}
+    h1 {color: #228B22; text-align: center; font-family: 'Helvetica Neue', Arial;}
     h2, h3 {color: #2E8B57;}
-    .footer {text-align: center; color: #555; margin-top: 3em;}
-    .result-box {background-color: #e8f5e9; padding: 1.5em; border-radius: 10px; border-left: 6px solid #228B22;}
+    .result-box {
+        background-color: #e8f5e9; 
+        padding: 1.8em; 
+        border-radius: 12px; 
+        border-left: 8px solid #228B22;
+        margin: 1em 0;
+    }
+    .info-box {
+        background-color: #ffffff;
+        padding: 1.5em;
+        border-radius: 10px;
+        border: 1px solid #90EE90;
+    }
+    .footer {text-align: center; color: #555; margin-top: 4em; font-size: 0.95em;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -22,8 +38,8 @@ st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 # ====================== DEINE 12 ARTEN + DATEN ======================
 PLANT_DATA = {
     "Birke": {"de": "Birke", "bot": "Betula pendula", "pflege": "Boden: sandig bis lehmig. Licht: vollsonnig. Wasser: mäßig. Standort: Pionierbaum auf offenen Flächen.", "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"},
-    "Gemeine Fichte": {"de": "Gemeine Fichte", "bot": "Picea abies", "pflege": "Boden: frisch, nährstoffreich. Licht: halbschattig. Wasser: mäßig.", "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
-    "Gemeine Kiefer": {"de": "Gemeine Kiefer", "bot": "Pinus sylvestris", "pflege": "Boden: sandig, nährstoffarm. Licht: vollsonnig. Wasser: sehr gering.", "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"},
+    "Gemeine Fichte": {"de": "Gemeine Fichte", "bot": "Picea abies", "pflege": "Boden: frisch, nährstoffreich. Licht: halbschattig. Wasser: mäßig. Standort: Berg- und Hügelländer.", "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
+    "Gemeine Kiefer": {"de": "Gemeine Kiefer", "bot": "Pinus sylvestris", "pflege": "Boden: sandig, nährstoffarm. Licht: vollsonnig. Wasser: sehr gering. Standort: Kiefernheiden.", "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"},
     "Rotbuche": {"de": "Rotbuche", "bot": "Fagus sylvatica", "pflege": "Boden: fruchtbar, leicht sauer bis neutral. Licht: halbschattig bis sonnig. Wasser: mäßig.", "wiki": "https://de.wikipedia.org/wiki/Rotbuche"},
     "Stieleiche": {"de": "Stieleiche", "bot": "Quercus robur", "pflege": "Boden: tiefgründig, feucht bis frisch. Licht: sonnig bis halbschattig. Wasser: mäßig.", "wiki": "https://de.wikipedia.org/wiki/Stieleiche"},
     "Traubeneiche": {"de": "Traubeneiche", "bot": "Quercus petraea", "pflege": "Boden: eher trocken, sauer. Licht: sonnig. Wasser: gering.", "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"},
@@ -39,35 +55,38 @@ PLANT_DATA = {
 @st.cache_resource
 def load_model():
     try:
-        model = tf.keras.models.load_model("keras_model.h5")
+        # Wichtig: compile=False verhindert viele Deserialisierungs-Probleme
+        model = tf.keras.models.load_model("keras_model.h5", compile=False)
         with open("labels.txt", "r", encoding="utf-8") as f:
             labels = [line.strip() for line in f.readlines()]
+        st.success("✅ Teachable Machine Modell erfolgreich geladen!")
         return model, labels
     except Exception as e:
-        st.error(f"Modell konnte nicht geladen werden: {e}")
-        st.info("Bitte lege 'keras_model.h5' und 'labels.txt' ins Root-Verzeichnis.")
+        st.error(f"❌ Modell konnte nicht geladen werden: {e}")
+        st.info("Tipp: Verwende tensorflow==2.15.0 oder tensorflow-cpu==2.15.0 in requirements.txt")
         return None, None
 
 model, labels = load_model()
 
-# ====================== HAUPT-APP ======================
-tab1, tab2, tab3 = st.tabs(["🔍 Erkennung", "📋 Meine 12 Arten", "ℹ️ Hinweise"])
+# ====================== HAUPTBEREICH ======================
+tab1, tab2, tab3 = st.tabs(["🔍 Erkennung starten", "📋 Meine 12 Arten", "ℹ️ Hinweise"])
 
 with tab1:
-    st.subheader("Bild hochladen oder Kamera")
+    st.subheader("Foto hochladen oder Kamera nutzen")
+
     col1, col2 = st.columns(2)
     with col1:
-        uploaded = st.file_uploader("Foto hochladen", type=["jpg", "jpeg", "png"])
+        uploaded_file = st.file_uploader("Bild hochladen (JPG/PNG)", type=["jpg", "jpeg", "png"])
     with col2:
-        camera = st.camera_input("Live-Kamera")
+        camera_file = st.camera_input("Live-Kamera")
 
     input_image = None
-    if uploaded is not None:
-        input_image = Image.open(uploaded)
-    elif camera is not None:
-        input_image = Image.open(camera)
+    if uploaded_file is not None:
+        input_image = Image.open(uploaded_file)
+    elif camera_file is not None:
+        input_image = Image.open(camera_file)
 
-    if input_image is not None and model is not None:
+    if input_image is not None and model is not None and labels is not None:
         st.image(input_image, caption="Dein Bild", use_column_width=True)
 
         # Vorverarbeitung
@@ -76,34 +95,44 @@ with tab1:
         img_array = np.expand_dims(img_array, axis=0)
 
         # Vorhersage
-        pred = model.predict(img_array, verbose=False)
-        idx = np.argmax(pred[0])
-        confidence = float(pred[0][idx] * 100)
-        predicted = labels[idx]
+        prediction = model.predict(img_array, verbose=False)
+        class_idx = np.argmax(prediction[0])
+        confidence = float(prediction[0][class_idx] * 100)
+        predicted_label = labels[class_idx]
 
+        # Ergebnis – jetzt mit besserem Kontrast
         st.markdown(f"""
         <div class="result-box">
-            <h3>Erkannt: <strong>{predicted}</strong></h3>
-            <p>Sicherheit: {confidence:.1f} %</p>
+            <h3>Erkannt: <strong>{predicted_label}</strong></h3>
+            <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
         </div>
         """, unsafe_allow_html=True)
 
-        if predicted in PLANT_DATA:
-            d = PLANT_DATA[predicted]
-            st.write(f"**Botanischer Name:** {d['bot']}")
-            st.write(f"**Pflegetipps:** {d['pflege']}")
-            st.markdown(f"[→ Wikipedia]({d['wiki']})")
+        # Pflanzen-Informationen anzeigen
+        if predicted_label in PLANT_DATA:
+            data = PLANT_DATA[predicted_label]
+            
+            st.markdown('<div class="info-box">', unsafe_allow_html=True)
+            st.subheader(f"ℹ️ Informationen zu {data['de']}")
+            st.write(f"**Botanischer Name:** {data['bot']}")
+            st.write(f"**Pflegetipps (deutsches Klima):** {data['pflege']}")
+            st.markdown(f"[→ Mehr auf Wikipedia erfahren]({data['wiki']})")
+            st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.warning("Keine zusätzlichen Informationen zu dieser Art hinterlegt.")
 
 with tab2:
     st.subheader("Deine trainierten 12 Arten")
     for name in PLANT_DATA.keys():
-        st.write(f"• {name}")
+        st.write(f"• **{name}**")
 
 with tab3:
     st.info("""
-    **Tipp:** Mit nur 12 Arten sollte die Erkennungsgenauigkeit schon recht gut sein.  
-    Teste das Modell mit Bildern, die du **nicht** zum Training verwendet hast.
+    **Hinweis:**  
+    Diese App erkennt aktuell 12 Arten.  
+    Für bessere Ergebnisse Fotos mit klarem Hintergrund und guter Beleuchtung verwenden.
     """)
 
+# Footer
 st.markdown("---")
 st.markdown('<p class="footer">Schulprojekt 2026 – [Dein Name]</p>', unsafe_allow_html=True)
