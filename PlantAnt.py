@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 
-# ====================== STREAMLIT CONFIG & DESIGN ======================
+# ====================== DESIGN ======================
 st.set_page_config(
     page_title="Pflanzen-Detektor",
     page_icon="🌳",
@@ -13,20 +13,22 @@ st.set_page_config(
 st.markdown("""
 <style>
     .main {background-color: #f0f8f0;}
-    h1 {color: #228B22; text-align: center; font-family: 'Helvetica Neue', Arial;}
+    h1 {color: #228B22; text-align: center;}
     h2, h3 {color: #2E8B57;}
+    
     .result-box {
-        background-color: #e8f5e9; 
+        background-color: #1e3a2f; 
+        color: white;
         padding: 1.8em; 
         border-radius: 12px; 
-        border-left: 8px solid #228B22;
-        margin: 1em 0;
+        margin: 1.2em 0;
     }
     .info-box {
         background-color: #ffffff;
-        padding: 1.5em;
+        padding: 1.6em;
         border-radius: 10px;
-        border: 1px solid #90EE90;
+        border: 2px solid #228B22;
+        margin-top: 1.5em;
     }
     .footer {text-align: center; color: #555; margin-top: 4em; font-size: 0.95em;}
 </style>
@@ -35,7 +37,7 @@ st.markdown("""
 st.title("🌳 Pflanzen-Detektor – Bäume & Blumen 🌸")
 st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 
-# ====================== DEINE 12 ARTEN + DATEN ======================
+# ====================== DEINE 12 ARTEN ======================
 PLANT_DATA = {
     "Birke": {"de": "Birke", "bot": "Betula pendula", "pflege": "Boden: sandig bis lehmig. Licht: vollsonnig. Wasser: mäßig. Standort: Pionierbaum auf offenen Flächen.", "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"},
     "Gemeine Fichte": {"de": "Gemeine Fichte", "bot": "Picea abies", "pflege": "Boden: frisch, nährstoffreich. Licht: halbschattig. Wasser: mäßig. Standort: Berg- und Hügelländer.", "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
@@ -55,24 +57,22 @@ PLANT_DATA = {
 @st.cache_resource
 def load_model():
     try:
-        # Wichtig: compile=False verhindert viele Deserialisierungs-Probleme
         model = tf.keras.models.load_model("keras_model.h5", compile=False)
         with open("labels.txt", "r", encoding="utf-8") as f:
             labels = [line.strip() for line in f.readlines()]
-        st.success("✅ Teachable Machine Modell erfolgreich geladen!")
+        st.success("✅ Modell erfolgreich geladen!")
         return model, labels
     except Exception as e:
-        st.error(f"❌ Modell konnte nicht geladen werden: {e}")
-        st.info("Tipp: Verwende tensorflow==2.15.0 oder tensorflow-cpu==2.15.0 in requirements.txt")
+        st.error(f"❌ Modell konnte nicht geladen werden: {str(e)}")
         return None, None
 
 model, labels = load_model()
 
 # ====================== HAUPTBEREICH ======================
-tab1, tab2, tab3 = st.tabs(["🔍 Erkennung starten", "📋 Meine 12 Arten", "ℹ️ Hinweise"])
+tab1, tab2 = st.tabs(["🔍 Erkennung starten", "📋 Meine 12 Arten"])
 
 with tab1:
-    st.subheader("Foto hochladen oder Kamera nutzen")
+    st.subheader("Foto hochladen oder mit der Kamera aufnehmen")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -89,18 +89,17 @@ with tab1:
     if input_image is not None and model is not None and labels is not None:
         st.image(input_image, caption="Dein Bild", use_column_width=True)
 
-        # Vorverarbeitung
+        # Vorverarbeitung & Vorhersage
         img = input_image.resize((224, 224))
         img_array = np.array(img).astype(np.float32) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
-        # Vorhersage
         prediction = model.predict(img_array, verbose=False)
         class_idx = np.argmax(prediction[0])
         confidence = float(prediction[0][class_idx] * 100)
         predicted_label = labels[class_idx]
 
-        # Ergebnis – jetzt mit besserem Kontrast
+        # Ergebnis-Box (dunkel mit weißem Text)
         st.markdown(f"""
         <div class="result-box">
             <h3>Erkannt: <strong>{predicted_label}</strong></h3>
@@ -108,30 +107,25 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-        # Pflanzen-Informationen anzeigen
+        # Pflanzen-Informationen (Tipps + Wiki-Link)
         if predicted_label in PLANT_DATA:
             data = PLANT_DATA[predicted_label]
             
             st.markdown('<div class="info-box">', unsafe_allow_html=True)
-            st.subheader(f"ℹ️ Informationen zu {data['de']}")
+            st.subheader(f"ℹ️ {data['de']}")
             st.write(f"**Botanischer Name:** {data['bot']}")
-            st.write(f"**Pflegetipps (deutsches Klima):** {data['pflege']}")
-            st.markdown(f"[→ Mehr auf Wikipedia erfahren]({data['wiki']})")
+            st.write(f"**Pflegetipps:** {data['pflege']}")
+            st.markdown(f"🔗 [Mehr Informationen auf Wikipedia]({data['wiki']})")
             st.markdown('</div>', unsafe_allow_html=True)
         else:
-            st.warning("Keine zusätzlichen Informationen zu dieser Art hinterlegt.")
+            st.warning("Keine weiteren Informationen zu dieser Art verfügbar.")
 
 with tab2:
     st.subheader("Deine trainierten 12 Arten")
-    for name in PLANT_DATA.keys():
-        st.write(f"• **{name}**")
-
-with tab3:
-    st.info("""
-    **Hinweis:**  
-    Diese App erkennt aktuell 12 Arten.  
-    Für bessere Ergebnisse Fotos mit klarem Hintergrund und guter Beleuchtung verwenden.
-    """)
+    cols = st.columns(2)
+    for i, name in enumerate(PLANT_DATA.keys()):
+        with cols[i % 2]:
+            st.write(f"• **{name}**")
 
 # Footer
 st.markdown("---")
