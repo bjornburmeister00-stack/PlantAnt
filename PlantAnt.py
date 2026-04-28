@@ -37,78 +37,78 @@ st.markdown("""
 st.title("🌳 Pflanzen-Detektor – Bäume & Blumen 🌸")
 st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 
-# ====================== PFLANZEN-DATEN (mit deutschen Tipps) ======================
+# ====================== PFLANZEN-DATEN ======================
 PLANT_DATA = {
     "Birke": {
         "de": "Birke",
         "bot": "Betula pendula",
-        "pflege": "Birken bevorzugen sonnige bis halbschattige Standorte mit durchlässigem, eher sandigem Boden. Sie sind anspruchslos und vertragen Trockenheit gut. Ideal als Pionierbaum auf offenen Flächen oder in Gärten.",
+        "pflege": "Birken bevorzugen sonnige bis halbschattige Standorte mit durchlässigem, eher sandigem Boden. Sie sind anspruchslos und vertragen Trockenheit gut.",
         "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"
     },
     "Gemeine Fichte": {
         "de": "Gemeine Fichte",
         "bot": "Picea abies",
-        "pflege": "Die Gemeine Fichte liebt frische, nährstoffreiche und leicht saure Böden. Sie bevorzugt halbschattige bis schattige Lagen und braucht regelmäßige Feuchtigkeit, besonders in den ersten Jahren.",
+        "pflege": "Die Gemeine Fichte liebt frische, nährstoffreiche und leicht saure Böden. Sie braucht regelmäßige Feuchtigkeit, besonders in den ersten Jahren.",
         "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"
     },
     "Gemeine Kiefer": {
         "de": "Gemeine Kiefer",
         "bot": "Pinus sylvestris",
-        "pflege": "Kiefern sind sehr genügsam und wachsen am besten auf sandigen, nährstoffarmen und trockenen Böden in voller Sonne. Sie sind extrem trockenheitsverträglich und winterhart.",
+        "pflege": "Kiefern wachsen am besten auf sandigen, nährstoffarmen Böden in voller Sonne. Sie sind sehr trockenheitsverträglich.",
         "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"
     },
     "Rotbuche": {
         "de": "Rotbuche",
         "bot": "Fagus sylvatica",
-        "pflege": "Rotbuchen gedeihen am besten auf fruchtbaren, leicht feuchten und humusreichen Böden. Sie vertragen Halbschatten gut und sind in ganz Deutschland weit verbreitet. Sehr schattentolerant im Unterwuchs.",
+        "pflege": "Rotbuchen gedeihen auf fruchtbaren, leicht feuchten Böden. Sie vertragen Halbschatten gut und sind in ganz Deutschland heimisch.",
         "wiki": "https://de.wikipedia.org/wiki/Rotbuche"
     },
     "Stieleiche": {
         "de": "Stieleiche",
         "bot": "Quercus robur",
-        "pflege": "Stieleichen lieben tiefgründige, frische bis feuchte Böden und sonnige bis halbschattige Standorte. Sie sind sehr langlebig und gut für offene Landschaften und Parks geeignet.",
+        "pflege": "Stieleichen bevorzugen tiefgründige, frische bis feuchte Böden und sonnige bis halbschattige Standorte.",
         "wiki": "https://de.wikipedia.org/wiki/Stieleiche"
     },
     "Traubeneiche": {
         "de": "Traubeneiche",
         "bot": "Quercus petraea",
-        "pflege": "Die Traubeneiche bevorzugt eher trockene, saure und durchlässige Böden auf Hügeln und in Mittelgebirgen. Sie ist lichtbedürftig und sehr robust.",
+        "pflege": "Die Traubeneiche mag eher trockene, saure Böden und sonnige Lagen, besonders in Mittelgebirgen.",
         "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"
     },
     "Gänseblümchen": {
         "de": "Gänseblümchen",
         "bot": "Bellis perennis",
-        "pflege": "Gänseblümchen wachsen fast überall auf normalem Garten- oder Rasenboden. Sie mögen sonnige bis halbschattige Plätze und brauchen nur mäßige Feuchtigkeit.",
+        "pflege": "Gänseblümchen wachsen fast überall auf normalem Rasen- oder Gartenboden bei Sonne oder Halbschatten.",
         "wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"
     },
     "Glockenblume": {
         "de": "Glockenblume",
         "bot": "Campanula spec.",
-        "pflege": "Glockenblumen bevorzugen durchlässigen, nährstoffreichen Boden und sonnige bis halbschattige Standorte. Sie eignen sich gut für Staudenbeete.",
+        "pflege": "Glockenblumen mögen durchlässigen, nährstoffreichen Boden und sonnige bis halbschattige Standorte.",
         "wiki": "https://de.wikipedia.org/wiki/Glockenblumen"
     },
     "Lavendel": {
         "de": "Lavendel",
         "bot": "Lavandula angustifolia",
-        "pflege": "Lavendel braucht viel Sonne und einen trockenen, sandigen bis kiesigen Boden. Staunässe ist unbedingt zu vermeiden. Sehr bienenfreundlich.",
+        "pflege": "Lavendel braucht viel Sonne und einen trockenen, sandigen Boden. Staunässe unbedingt vermeiden.",
         "wiki": "https://de.wikipedia.org/wiki/Lavendel"
     },
     "Rittersporn": {
         "de": "Rittersporn",
         "bot": "Delphinium spec.",
-        "pflege": "Rittersporn liebt nährstoffreiche, tiefgründige Böden und volle Sonne. Er braucht regelmäßige Feuchtigkeit und sollte vor Wind geschützt stehen.",
+        "pflege": "Rittersporn liebt nährstoffreiche Böden, volle Sonne und regelmäßige Feuchtigkeit.",
         "wiki": "https://de.wikipedia.org/wiki/Rittersporn"
     },
     "Sonnenblume": {
         "de": "Sonnenblume",
         "bot": "Helianthus annuus",
-        "pflege": "Sonnenblumen brauchen viel Sonne und einen nährstoffreichen, lockeren Boden. Regelmäßiges Gießen ist besonders während des Wachstums wichtig.",
+        "pflege": "Sonnenblumen brauchen viel Sonne und nährstoffreichen Boden. Regelmäßiges Gießen ist wichtig.",
         "wiki": "https://de.wikipedia.org/wiki/Sonnenblume"
     },
     "Vergissmeinnicht": {
         "de": "Vergissmeinnicht",
         "bot": "Myosotis spec.",
-        "pflege": "Vergissmeinnicht bevorzugen feuchte, humusreiche Böden und halbschattige Standorte. Sie eignen sich gut für Beet- und Teichränder.",
+        "pflege": "Vergissmeinnicht bevorzugen feuchte, humusreiche Böden und halbschattige Standorte.",
         "wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"
     }
 }
@@ -159,7 +159,7 @@ with tab1:
         confidence = float(prediction[0][class_idx] * 100)
         predicted_label = labels[class_idx]
 
-        # Ergebnis-Box (dunkel mit weißem Text)
+        # Ergebnis Box
         st.markdown(f"""
         <div class="result-box">
             <h3>Erkannt: <strong>{predicted_label}</strong></h3>
@@ -167,22 +167,22 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-        # Pflanzen-Informationen
+        # === WICHTIG: Tipps & Link direkt darunter anzeigen ===
         if predicted_label in PLANT_DATA:
             data = PLANT_DATA[predicted_label]
             
             st.markdown('<div class="info-box">', unsafe_allow_html=True)
             st.subheader(f"{data['de']} ({data['bot']})")
-            st.write(f"**Pflegetipps für das deutsche Klima:**")
+            st.write("**Pflegetipps für das deutsche Klima:**")
             st.write(data['pflege'])
-            st.markdown(f"🔗 [Mehr auf Wikipedia erfahren]({data['wiki']})")
+            st.markdown(f"🔗 [Mehr Informationen auf Wikipedia]({data['wiki']})")
             st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
-    st.subheader("Deine trainierten 12 Arten")
+    st.subheader("Meine 12 trainierten Arten")
     for name in PLANT_DATA.keys():
         data = PLANT_DATA[name]
-        st.write(f"• **{name}** ({data['bot']})")
+        st.write(f"• {name} ({data['bot']})")
 
 # Footer
 st.markdown("---")
