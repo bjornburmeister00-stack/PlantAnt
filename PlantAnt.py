@@ -39,78 +39,18 @@ st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 
 # ====================== PFLANZEN-DATEN ======================
 PLANT_DATA = {
-    "Birke": {
-        "de": "Birke",
-        "bot": "Betula pendula",
-        "pflege": "Birken bevorzugen sonnige bis halbschattige Standorte mit durchlässigem, eher sandigem Boden. Sie sind anspruchslos und vertragen Trockenheit gut.",
-        "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"
-    },
-    "Gemeine Fichte": {
-        "de": "Gemeine Fichte",
-        "bot": "Picea abies",
-        "pflege": "Die Gemeine Fichte liebt frische, nährstoffreiche und leicht saure Böden. Sie braucht regelmäßige Feuchtigkeit, besonders in den ersten Jahren.",
-        "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"
-    },
-    "Gemeine Kiefer": {
-        "de": "Gemeine Kiefer",
-        "bot": "Pinus sylvestris",
-        "pflege": "Kiefern wachsen am besten auf sandigen, nährstoffarmen Böden in voller Sonne. Sie sind sehr trockenheitsverträglich.",
-        "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"
-    },
-    "Rotbuche": {
-        "de": "Rotbuche",
-        "bot": "Fagus sylvatica",
-        "pflege": "Rotbuchen gedeihen auf fruchtbaren, leicht feuchten Böden. Sie vertragen Halbschatten gut und sind in ganz Deutschland heimisch.",
-        "wiki": "https://de.wikipedia.org/wiki/Rotbuche"
-    },
-    "Stieleiche": {
-        "de": "Stieleiche",
-        "bot": "Quercus robur",
-        "pflege": "Stieleichen bevorzugen tiefgründige, frische bis feuchte Böden und sonnige bis halbschattige Standorte.",
-        "wiki": "https://de.wikipedia.org/wiki/Stieleiche"
-    },
-    "Traubeneiche": {
-        "de": "Traubeneiche",
-        "bot": "Quercus petraea",
-        "pflege": "Die Traubeneiche mag eher trockene, saure Böden und sonnige Lagen, besonders in Mittelgebirgen.",
-        "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"
-    },
-    "Gänseblümchen": {
-        "de": "Gänseblümchen",
-        "bot": "Bellis perennis",
-        "pflege": "Gänseblümchen wachsen fast überall auf normalem Rasen- oder Gartenboden bei Sonne oder Halbschatten.",
-        "wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"
-    },
-    "Glockenblume": {
-        "de": "Glockenblume",
-        "bot": "Campanula spec.",
-        "pflege": "Glockenblumen mögen durchlässigen, nährstoffreichen Boden und sonnige bis halbschattige Standorte.",
-        "wiki": "https://de.wikipedia.org/wiki/Glockenblumen"
-    },
-    "Lavendel": {
-        "de": "Lavendel",
-        "bot": "Lavandula angustifolia",
-        "pflege": "Lavendel braucht viel Sonne und einen trockenen, sandigen Boden. Staunässe unbedingt vermeiden.",
-        "wiki": "https://de.wikipedia.org/wiki/Lavendel"
-    },
-    "Rittersporn": {
-        "de": "Rittersporn",
-        "bot": "Delphinium spec.",
-        "pflege": "Rittersporn liebt nährstoffreiche Böden, volle Sonne und regelmäßige Feuchtigkeit.",
-        "wiki": "https://de.wikipedia.org/wiki/Rittersporn"
-    },
-    "Sonnenblume": {
-        "de": "Sonnenblume",
-        "bot": "Helianthus annuus",
-        "pflege": "Sonnenblumen brauchen viel Sonne und nährstoffreichen Boden. Regelmäßiges Gießen ist wichtig.",
-        "wiki": "https://de.wikipedia.org/wiki/Sonnenblume"
-    },
-    "Vergissmeinnicht": {
-        "de": "Vergissmeinnicht",
-        "bot": "Myosotis spec.",
-        "pflege": "Vergissmeinnicht bevorzugen feuchte, humusreiche Böden und halbschattige Standorte.",
-        "wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"
-    }
+    "Birke": {"de": "Birke", "bot": "Betula pendula", "pflege": "Birken bevorzugen sonnige bis halbschattige Standorte mit durchlässigem, eher sandigem Boden. Sie sind anspruchslos und vertragen Trockenheit gut.", "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"},
+    "Gemeine Fichte": {"de": "Gemeine Fichte", "bot": "Picea abies", "pflege": "Die Gemeine Fichte liebt frische, nährstoffreiche und leicht saure Böden. Sie braucht regelmäßige Feuchtigkeit, besonders in den ersten Jahren.", "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
+    "Gemeine Kiefer": {"de": "Gemeine Kiefer", "bot": "Pinus sylvestris", "pflege": "Kiefern wachsen am besten auf sandigen, nährstoffarmen Böden in voller Sonne. Sie sind sehr trockenheitsverträglich.", "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"},
+    "Rotbuche": {"de": "Rotbuche", "bot": "Fagus sylvatica", "pflege": "Rotbuchen gedeihen auf fruchtbaren, leicht feuchten Böden. Sie vertragen Halbschatten gut und sind in ganz Deutschland heimisch.", "wiki": "https://de.wikipedia.org/wiki/Rotbuche"},
+    "Stieleiche": {"de": "Stieleiche", "bot": "Quercus robur", "pflege": "Stieleichen bevorzugen tiefgründige, frische bis feuchte Böden und sonnige bis halbschattige Standorte.", "wiki": "https://de.wikipedia.org/wiki/Stieleiche"},
+    "Traubeneiche": {"de": "Traubeneiche", "bot": "Quercus petraea", "pflege": "Die Traubeneiche mag eher trockene, saure Böden und sonnige Lagen, besonders in Mittelgebirgen.", "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"},
+    "Gänseblümchen": {"de": "Gänseblümchen", "bot": "Bellis perennis", "pflege": "Gänseblümchen wachsen fast überall auf normalem Rasen- oder Gartenboden bei Sonne oder Halbschatten.", "wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"},
+    "Glockenblume": {"de": "Glockenblume", "bot": "Campanula spec.", "pflege": "Glockenblumen mögen durchlässigen, nährstoffreichen Boden und sonnige bis halbschattige Standorte.", "wiki": "https://de.wikipedia.org/wiki/Glockenblumen"},
+    "Lavendel": {"de": "Lavendel", "bot": "Lavandula angustifolia", "pflege": "Lavendel braucht viel Sonne und einen trockenen, sandigen Boden. Staunässe unbedingt vermeiden.", "wiki": "https://de.wikipedia.org/wiki/Lavendel"},
+    "Rittersporn": {"de": "Rittersporn", "bot": "Delphinium spec.", "pflege": "Rittersporn liebt nährstoffreiche Böden, volle Sonne und regelmäßige Feuchtigkeit.", "wiki": "https://de.wikipedia.org/wiki/Rittersporn"},
+    "Sonnenblume": {"de": "Sonnenblume", "bot": "Helianthus annuus", "pflege": "Sonnenblumen brauchen viel Sonne und nährstoffreichen Boden. Regelmäßiges Gießen ist wichtig.", "wiki": "https://de.wikipedia.org/wiki/Sonnenblume"},
+    "Vergissmeinnicht": {"de": "Vergissmeinnicht", "bot": "Myosotis spec.", "pflege": "Vergissmeinnicht bevorzugen feuchte, humusreiche Böden und halbschattige Standorte.", "wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"}
 }
 
 # ====================== MODELL LADEN ======================
@@ -157,9 +97,12 @@ with tab1:
         prediction = model.predict(img_array, verbose=False)
         class_idx = np.argmax(prediction[0])
         confidence = float(prediction[0][class_idx] * 100)
-        predicted_label = labels[class_idx]
+        
+        # === ZAHL ENTFERNEN ===
+        raw_label = labels[class_idx]
+        predicted_label = raw_label.split('. ', 1)[-1]   # Entfernt "1. ", "2. " etc.
 
-        # Ergebnis Box
+        # Ergebnis-Box ohne Zahl
         st.markdown(f"""
         <div class="result-box">
             <h3>Erkannt: <strong>{predicted_label}</strong></h3>
@@ -167,7 +110,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-        # === WICHTIG: Tipps & Link direkt darunter anzeigen ===
+        # Tipps + Botanischer Name + Wiki-Link direkt darunter
         if predicted_label in PLANT_DATA:
             data = PLANT_DATA[predicted_label]
             
@@ -175,8 +118,10 @@ with tab1:
             st.subheader(f"{data['de']} ({data['bot']})")
             st.write("**Pflegetipps für das deutsche Klima:**")
             st.write(data['pflege'])
-            st.markdown(f"🔗 [Mehr Informationen auf Wikipedia]({data['wiki']})")
+            st.markdown(f"🔗 [Mehr auf Wikipedia erfahren]({data['wiki']})")
             st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.warning("Keine weiteren Informationen zu dieser Art verfügbar.")
 
 with tab2:
     st.subheader("Meine 12 trainierten Arten")
