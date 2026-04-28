@@ -14,20 +14,15 @@ st.markdown("""
 <style>
     .main {background-color: #f0f8f0;}
     h1 {color: #228B22; text-align: center;}
-    .result-box {
+    
+    .result-box, .info-box {
         background-color: #1e3a2f; 
         color: white;
         padding: 1.8em; 
         border-radius: 12px; 
         margin: 1.2em 0;
     }
-    .info-box {
-        background-color: #ffffff;
-        padding: 1.6em;
-        border-radius: 10px;
-        border: 2px solid #228B22;
-        margin-top: 1em;
-    }
+    
     .footer {text-align: center; color: #555; margin-top: 4em; font-size: 0.95em;}
 </style>
 """, unsafe_allow_html=True)
@@ -64,7 +59,7 @@ PLANT_DATA = {
     },
     "Traubeneiche": {
         "bot": "Quercus petraea",
-        "tipps": "Mag eher trockene, saure Böden und sonnige Lagen, besonders in Hügel- und Bergregionen.",
+        "tipps": "Mag eher trockene, saure Böden und sonnige Lagen, besonders in Mittelgebirgen.",
         "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"
     },
     "Gänseblümchen": {
@@ -94,7 +89,7 @@ PLANT_DATA = {
     },
     "Vergissmeinnicht": {
         "bot": "Myosotis spec.",
-        "tipps": "Bevorzugt feuchte, humusreiche Böden und halbschattige bis halbschattige Standorte.",
+        "tipps": "Bevorzugt feuchte, humusreiche Böden und halbschattige Standorte.",
         "wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"
     }
 }
@@ -148,7 +143,6 @@ with tab1:
         raw_label = labels[class_idx].strip()
         predicted_label = raw_label.split(' ', 1)[-1]
 
-        # Wikipedia-Link
         wiki_url = PLANT_DATA.get(predicted_label, {}).get("wiki", "#")
 
         # Ergebnis-Box
@@ -161,7 +155,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-        # Mini-Paragraph mit Botanischem Namen + Tipps
+        # Info-Box mit gleicher dunkler Farbe
         if predicted_label in PLANT_DATA:
             data = PLANT_DATA[predicted_label]
             st.markdown(f"""
