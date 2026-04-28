@@ -14,21 +14,12 @@ st.markdown("""
 <style>
     .main {background-color: #f0f8f0;}
     h1 {color: #228B22; text-align: center;}
-    h2, h3 {color: #2E8B57;}
-    
     .result-box {
         background-color: #1e3a2f; 
         color: white;
         padding: 1.8em; 
         border-radius: 12px; 
         margin: 1.2em 0;
-    }
-    .info-box {
-        background-color: #ffffff;
-        padding: 1.8em;
-        border-radius: 10px;
-        border: 2px solid #228B22;
-        margin-top: 1.5em;
     }
     .footer {text-align: center; color: #555; margin-top: 4em; font-size: 0.95em;}
 </style>
@@ -37,20 +28,20 @@ st.markdown("""
 st.title("🌳 Pflanzen-Detektor – Bäume & Blumen 🌸")
 st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 
-# ====================== PFLANZEN-DATEN ======================
+# ====================== PFLANZEN-DATEN (nur Wiki-Links) ======================
 PLANT_DATA = {
-    "Birke": {"de": "Birke", "bot": "Betula pendula", "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"},
-    "Gemeine Fichte": {"de": "Gemeine Fichte", "bot": "Picea abies", "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
-    "Gemeine Kiefer": {"de": "Gemeine Kiefer", "bot": "Pinus sylvestris", "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"},
-    "Rotbuche": {"de": "Rotbuche", "bot": "Fagus sylvatica", "wiki": "https://de.wikipedia.org/wiki/Rotbuche"},
-    "Stieleiche": {"de": "Stieleiche", "bot": "Quercus robur", "wiki": "https://de.wikipedia.org/wiki/Stieleiche"},
-    "Traubeneiche": {"de": "Traubeneiche", "bot": "Quercus petraea", "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"},
-    "Gänseblümchen": {"de": "Gänseblümchen", "bot": "Bellis perennis", "wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"},
-    "Glockenblume": {"de": "Glockenblume", "bot": "Campanula spec.", "wiki": "https://de.wikipedia.org/wiki/Glockenblumen"},
-    "Lavendel": {"de": "Lavendel", "bot": "Lavandula angustifolia", "wiki": "https://de.wikipedia.org/wiki/Lavendel"},
-    "Rittersporn": {"de": "Rittersporn", "bot": "Delphinium spec.", "wiki": "https://de.wikipedia.org/wiki/Rittersporn"},
-    "Sonnenblume": {"de": "Sonnenblume", "bot": "Helianthus annuus", "wiki": "https://de.wikipedia.org/wiki/Sonnenblume"},
-    "Vergissmeinnicht": {"de": "Vergissmeinnicht", "bot": "Myosotis spec.", "wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"}
+    "Birke": {"wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"},
+    "Gemeine Fichte": {"wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"},
+    "Gemeine Kiefer": {"wiki": "https://de.wikipedia.org/wiki/Waldkiefer"},
+    "Rotbuche": {"wiki": "https://de.wikipedia.org/wiki/Rotbuche"},
+    "Stieleiche": {"wiki": "https://de.wikipedia.org/wiki/Stieleiche"},
+    "Traubeneiche": {"wiki": "https://de.wikipedia.org/wiki/Traubeneiche"},
+    "Gänseblümchen": {"wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"},
+    "Glockenblume": {"wiki": "https://de.wikipedia.org/wiki/Glockenblumen"},
+    "Lavendel": {"wiki": "https://de.wikipedia.org/wiki/Lavendel"},
+    "Rittersporn": {"wiki": "https://de.wikipedia.org/wiki/Rittersporn"},
+    "Sonnenblume": {"wiki": "https://de.wikipedia.org/wiki/Sonnenblume"},
+    "Vergissmeinnicht": {"wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"}
 }
 
 # ====================== MODELL LADEN ======================
@@ -98,33 +89,34 @@ with tab1:
         class_idx = np.argmax(prediction[0])
         confidence = float(prediction[0][class_idx] * 100)
         
-        # Zahl entfernen (falls vorhanden)
+        # Zahl entfernen
         raw_label = labels[class_idx]
         predicted_label = raw_label.split('. ', 1)[-1]
 
-        # Ergebnis-Box
-        st.markdown(f"""
-        <div class="result-box">
-            <h3>Erkannt: <strong>{predicted_label}</strong></h3>
-            <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # Wikipedia-Link direkt anzeigen
+        # Ergebnis mit direktem Wikipedia-Link
         if predicted_label in PLANT_DATA:
-            data = PLANT_DATA[predicted_label]
+            wiki_link = PLANT_DATA[predicted_label]["wiki"]
             st.markdown(f"""
-            <div class="info-box">
-                <h4>{data['de']} ({data['bot']})</h4>
-                <p>🔗 <a href="{data['wiki']}" target="_blank">Wikipedia-Seite öffnen →</a></p>
+            <div class="result-box">
+                <h3>Erkannt: <strong>{predicted_label}</strong> 
+                <a href="{wiki_link}" target="_blank" style="color: #90EE90; margin-left: 15px;">
+                [Wikipedia]
+                </a></h3>
+                <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div class="result-box">
+                <h3>Erkannt: <strong>{predicted_label}</strong></h3>
+                <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
             </div>
             """, unsafe_allow_html=True)
 
 with tab2:
     st.subheader("Meine 12 trainierten Arten")
     for name in PLANT_DATA.keys():
-        data = PLANT_DATA[name]
-        st.write(f"• {name} ({data['bot']})")
+        st.write(f"• {name}")
 
 # Footer
 st.markdown("---")
