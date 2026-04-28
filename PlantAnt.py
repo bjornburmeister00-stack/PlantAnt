@@ -21,6 +21,13 @@ st.markdown("""
         border-radius: 12px; 
         margin: 1.2em 0;
     }
+    .info-box {
+        background-color: #ffffff;
+        padding: 1.6em;
+        border-radius: 10px;
+        border: 2px solid #228B22;
+        margin-top: 1em;
+    }
     .footer {text-align: center; color: #555; margin-top: 4em; font-size: 0.95em;}
 </style>
 """, unsafe_allow_html=True)
@@ -28,20 +35,68 @@ st.markdown("""
 st.title("🌳 Pflanzen-Detektor – Bäume & Blumen 🌸")
 st.markdown("**Selbst trainiert mit Teachable Machine (12 Arten)**")
 
-# ====================== WIKI-LINKS ======================
+# ====================== PFLANZEN-DATEN ======================
 PLANT_DATA = {
-    "Birke": "https://de.wikipedia.org/wiki/Hänge-Birke",
-    "Gemeine Fichte": "https://de.wikipedia.org/wiki/Gemeine_Fichte",
-    "Gemeine Kiefer": "https://de.wikipedia.org/wiki/Waldkiefer",
-    "Rotbuche": "https://de.wikipedia.org/wiki/Rotbuche",
-    "Stieleiche": "https://de.wikipedia.org/wiki/Stieleiche",
-    "Traubeneiche": "https://de.wikipedia.org/wiki/Traubeneiche",
-    "Gänseblümchen": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen",
-    "Glockenblume": "https://de.wikipedia.org/wiki/Glockenblumen",
-    "Lavendel": "https://de.wikipedia.org/wiki/Lavendel",
-    "Rittersporn": "https://de.wikipedia.org/wiki/Rittersporn",
-    "Sonnenblume": "https://de.wikipedia.org/wiki/Sonnenblume",
-    "Vergissmeinnicht": "https://de.wikipedia.org/wiki/Vergissmeinnicht"
+    "Birke": {
+        "bot": "Betula pendula",
+        "tipps": "Birken bevorzugen sonnige bis halbschattige Standorte mit durchlässigem, sandigem Boden. Sie sind anspruchslos und sehr trockenheitsverträglich.",
+        "wiki": "https://de.wikipedia.org/wiki/Hänge-Birke"
+    },
+    "Gemeine Fichte": {
+        "bot": "Picea abies",
+        "tipps": "Liebt frische, nährstoffreiche und leicht saure Böden. Braucht besonders in den ersten Jahren regelmäßige Feuchtigkeit.",
+        "wiki": "https://de.wikipedia.org/wiki/Gemeine_Fichte"
+    },
+    "Gemeine Kiefer": {
+        "bot": "Pinus sylvestris",
+        "tipps": "Wächst am besten auf sandigen, nährstoffarmen Böden in voller Sonne. Sehr robust und trockenheitsverträglich.",
+        "wiki": "https://de.wikipedia.org/wiki/Waldkiefer"
+    },
+    "Rotbuche": {
+        "bot": "Fagus sylvatica",
+        "tipps": "Gedeiht auf fruchtbaren, leicht feuchten Böden. Verträgt Halbschatten gut und ist in ganz Deutschland heimisch.",
+        "wiki": "https://de.wikipedia.org/wiki/Rotbuche"
+    },
+    "Stieleiche": {
+        "bot": "Quercus robur",
+        "tipps": "Bevorzugt tiefgründige, frische bis feuchte Böden und sonnige bis halbschattige Standorte.",
+        "wiki": "https://de.wikipedia.org/wiki/Stieleiche"
+    },
+    "Traubeneiche": {
+        "bot": "Quercus petraea",
+        "tipps": "Mag eher trockene, saure Böden und sonnige Lagen, besonders in Hügel- und Bergregionen.",
+        "wiki": "https://de.wikipedia.org/wiki/Traubeneiche"
+    },
+    "Gänseblümchen": {
+        "bot": "Bellis perennis",
+        "tipps": "Wächst auf fast jedem normalen Garten- oder Rasenboden bei Sonne oder Halbschatten.",
+        "wiki": "https://de.wikipedia.org/wiki/G%C3%A4nsebl%C3%BCmchen"
+    },
+    "Glockenblume": {
+        "bot": "Campanula spec.",
+        "tipps": "Bevorzugt durchlässigen, nährstoffreichen Boden und sonnige bis halbschattige Standorte.",
+        "wiki": "https://de.wikipedia.org/wiki/Glockenblumen"
+    },
+    "Lavendel": {
+        "bot": "Lavandula angustifolia",
+        "tipps": "Braucht viel Sonne und einen trockenen, sandigen bis kiesigen Boden. Staunässe unbedingt vermeiden.",
+        "wiki": "https://de.wikipedia.org/wiki/Lavendel"
+    },
+    "Rittersporn": {
+        "bot": "Delphinium spec.",
+        "tipps": "Liebt nährstoffreiche, tiefgründige Böden, volle Sonne und regelmäßige Bewässerung.",
+        "wiki": "https://de.wikipedia.org/wiki/Rittersporn"
+    },
+    "Sonnenblume": {
+        "bot": "Helianthus annuus",
+        "tipps": "Braucht viel Sonne und nährstoffreichen, lockeren Boden. Regelmäßiges Gießen während des Wachstums ist wichtig.",
+        "wiki": "https://de.wikipedia.org/wiki/Sonnenblume"
+    },
+    "Vergissmeinnicht": {
+        "bot": "Myosotis spec.",
+        "tipps": "Bevorzugt feuchte, humusreiche Böden und halbschattige bis halbschattige Standorte.",
+        "wiki": "https://de.wikipedia.org/wiki/Vergissmeinnicht"
+    }
 }
 
 # ====================== MODELL LADEN ======================
@@ -89,23 +144,33 @@ with tab1:
         class_idx = np.argmax(prediction[0])
         confidence = float(prediction[0][class_idx] * 100)
 
-        # === ZAHL SAUBER ENTFERNEN ===
+        # Zahl entfernen
         raw_label = labels[class_idx].strip()
-        # Entfernt alles vor dem ersten Leerzeichen (z.B. "8 Lavendel" → "Lavendel")
         predicted_label = raw_label.split(' ', 1)[-1]
 
-        # Ergebnis-Box mit Wiki-Link direkt daneben
-        wiki_url = PLANT_DATA.get(predicted_label, "#")
-        
+        # Wikipedia-Link
+        wiki_url = PLANT_DATA.get(predicted_label, {}).get("wiki", "#")
+
+        # Ergebnis-Box
         st.markdown(f"""
         <div class="result-box">
             <h3>Erkannt: <strong>{predicted_label}</strong> 
-            <a href="{wiki_url}" target="_blank" style="color: #90EE90; font-size: 1.1em; margin-left: 20px;">
-            [Wikipedia ansehen]
-            </a></h3>
+            <a href="{wiki_url}" target="_blank" style="color: #90EE90; margin-left: 20px;">[Wikipedia]</a>
+            </h3>
             <p><strong>Sicherheit:</strong> {confidence:.1f} %</p>
         </div>
         """, unsafe_allow_html=True)
+
+        # Mini-Paragraph mit Botanischem Namen + Tipps
+        if predicted_label in PLANT_DATA:
+            data = PLANT_DATA[predicted_label]
+            st.markdown(f"""
+            <div class="info-box">
+                <strong>Wissenschaftlicher Name:</strong> {data['bot']}<br><br>
+                <strong>Tipps zur Anpflanzung im deutschen Klima:</strong><br>
+                {data['tipps']}
+            </div>
+            """, unsafe_allow_html=True)
 
 with tab2:
     st.subheader("Meine 12 trainierten Arten")
