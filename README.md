@@ -1,20 +1,43 @@
-# Pflanzen-Detektor mit YOLO – Bäume & Blumen
+# 🌳 Pflanzen-Detektor – Selbst trainiert mit Teachable Machine
 
-**Schulprojekt 2026** – KI-gestützte Erkennung von 20 Bäumen und 20 Blumen.
+**Schulprojekt 2026**  
+KI-gestützte Erkennung von heimischen Bäumen und Blumen
+
+## Projektbeschreibung
+Diese Web-App wurde mit **Google Teachable Machine** trainiert und erkennt 12 heimische Pflanzenarten zuverlässig. Die App ist einfach bedienbar und liefert neben der Erkennung auch botanische Namen, Pflegetipps für das deutsche Klima sowie direkte Wikipedia-Links.
 
 ## Features
-- Einheitliches grün-weißes Design (identisch mit App 2)
-- Foto-Upload + Live-Kamera
-- YOLOv8-Objekterkennung mit Bounding Boxes
-- Interaktive Demo-Erkennung der 40 festen Arten
-- Pflegetipps (deutsches Klima) + Wikipedia-Links
+- Foto-Upload und Live-Kamera
+- Echtzeit-Erkennung mit eigenem TensorFlow-Modell
+- Anzeige von botanischem Namen, Pflegetipps und Wikipedia-Link
+- Einheitliches grün-weißes Design (passend zur zweiten App)
 - Vollständig auf Deutsch
 
-## Arten (fest integriert)
-**Bäume:** Rotbuche, Stieleiche, Traubeneiche, Gemeine Fichte, Gemeine Kiefer, Bergahorn, Birke, Sommerlinde, Winterlinde, Hainbuche, Esche, Vogelbeere/Eberesche, Apfelbaum, Birnbaum, Kastanie, Douglasie, Lärche, Weißtanne, Schwarzerle, Zitterpappel/Espe.  
-**Blumen:** Gänseblümchen, Löwenzahn, Kornblume, Klatschmohn, Sonnenblume, Tulpe, Rose, Lavendel, Hortensie, Schlüsselblume, Glockenblume, Margerite, Schafgarbe, Vergissmeinnicht, Rittersporn, Iris/Schwertlilie, Nelke, Phacelia, Wilde Malve, Flockenblume.
+## Trainierte Arten
 
-## Lokale Ausführung
+**Bäume:**
+- Birke
+- Gemeine Fichte
+- Gemeine Kiefer
+- Rotbuche
+- Stieleiche
+- Traubeneiche
+
+**Blumen:**
+- Gänseblümchen
+- Glockenblume
+- Lavendel
+- Rittersporn
+- Sonnenblume
+- Vergissmeinnicht
+
+## Technologien
+- Streamlit
+- TensorFlow / Keras (exportiert aus Teachable Machine)
+- Python
+
+## Installation (lokal)
+
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
